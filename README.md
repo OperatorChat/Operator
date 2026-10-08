@@ -10,7 +10,7 @@ It does this as a [Matrix](https://matrix.org) client signed in to your existing
 
 ## Get Operator
 
-**[⬇ Download the APK (0.3.0-beta, 16 MB)](https://github.com/OperatorChat/Operator/releases/download/v0.3.0-beta/operator-0.3.0-beta.apk)** — copy it to the phone and open it from the Files app. Other ways: [Obtainium](https://github.com/ImranR98/Obtainium) (add this repository's address and it installs and updates for you), the [IzzyOnDroid](https://apt.izzysoft.de/fdroid/) repository in the F-Droid app, and F-Droid itself once its review is done.
+**[⬇ Download the APK (0.3.1-beta, 16 MB)](https://github.com/OperatorChat/Operator/releases/download/v0.3.1-beta/operator-0.3.1-beta.apk)** — copy it to the phone and open it from the Files app. Other ways: [Obtainium](https://github.com/ImranR98/Obtainium) (add this repository's address and it installs and updates for you), the [IzzyOnDroid](https://apt.izzysoft.de/fdroid/) repository in the F-Droid app, and F-Droid itself once its review is done.
 
 Then, in this order:
 

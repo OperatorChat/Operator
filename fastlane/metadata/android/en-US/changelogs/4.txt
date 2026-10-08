@@ -1,0 +1,1 @@
+Fixed: after approving the phone with a recovery key, the key-backup restore could give up once and never retry, leaving chats encrypted until a restart. It now retries on a schedule.

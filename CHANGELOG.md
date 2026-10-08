@@ -2,7 +2,12 @@
 
 Notable changes to Operator. Versions follow major.minor.patch.
 
-## 0.3.0-beta (unreleased)
+## 0.3.1-beta (8 October 2026)
+
+- Fixed: after approving the phone with a recovery key, the key-backup restore could give up once and never retry, leaving chats encrypted until the app was restarted. It now retries on a schedule.
+- Build hygiene for F-Droid: pinned Gradle wrapper checksum, en-US listing metadata.
+
+## 0.3.0-beta (8 October 2026)
 
 First public beta.
 
