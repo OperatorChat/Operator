@@ -1825,9 +1825,19 @@ object MatrixRepository {
             swapToFullSync()
             // Start the key-backup restore now (Chats relied on the next
             // e2eeState() read to do it; Operator's screens may never call that).
-            if (!restoreAttempted) {
-                restoreAttempted = true
-                scope.launch { restoreMegolmSessions() }
+            // Cross-signing trust lands a moment after the key is accepted, so a
+            // single immediate attempt can see "not verified" and defer for ever
+            // (8 Oct 2026: a phone sat two hours with encrypted chats). Run the
+            // same retry ladder the SAS path uses; each attempt is cheap when
+            // nothing is left to do.
+            restoreAttempted = true
+            scope.launch {
+                val prefs = appContext?.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+                listOf(0L, 10L, 30L, 60L, 120L, 300L, 600L, 1200L).forEach { delayS ->
+                    delay(delayS * 1000)
+                    prefs?.edit()?.remove(KEY_RESTORE_LAST_RUN_MS)?.apply()
+                    restoreMegolmSessions()
+                }
             }
             // Local-only: flags-only re-stamp, no crawl (INGEST-DERIVED-PLAN
             // Phase C); unread suppression re-derives per row as rooms change.
@@ -2252,6 +2262,8 @@ object MatrixRepository {
             // Mid-verification (fresh login): every room would log "skipping
             // restore" and the walk just burns CPU while the SAS waits. The
             // post-Done ladder relaunches this once verification completes.
+            // Operator: let the next e2eeState()/restore-arm path try again too.
+            restoreAttempted = false
             android.util.Log.i(TAG, "restore: device not verified — deferring crawl until verification completes")
             return
         }
