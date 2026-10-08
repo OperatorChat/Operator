@@ -1,0 +1,19 @@
+Operator is a chat app for keypad phones: Android feature phones with a D-pad, soft keys and a T9 keypad. It shows WhatsApp, Signal, Telegram, Messenger, Instagram, Discord and more in one list, with notifications that work without Google services, on phones that would struggle with any ordinary chat app.
+
+It is a Matrix client signed in to a Beeper account. Beeper connects your chat networks and places the messages in an encrypted Matrix account; Operator is the keypad-phone window onto that account. You need a Beeper account with your chat apps connected, set up on a computer with Beeper Desktop.
+
+What it does
+• All your chats in one list, driven entirely by the keypad. The screen always says what the two soft keys do.
+• Read and reply, with delivery and read marks, replies, edits, delete for everyone, and reactions.
+• Photos on demand: nothing downloads until you ask. Send photos from the gallery or camera. Open or save files.
+• Mentions: see when you've been named, mute a group except for mentions, mention people from the member list.
+• Notifications in seconds through a tiny relay that never sees message content. Optional screen wake.
+• Four looks, light and dark, three text sizes. Turn-to-preview on phones that rotate.
+
+Privacy
+Messages are end-to-end encrypted by Matrix. Operator's database on the phone is encrypted with a key in the phone's hardware keystore. The notification relay receives only a content-free wake-up signal. No analytics, no crash reporting, no Google services, no servers of our own.
+
+Beta
+Operator is in public beta and in daily use on the TTfone TT990 and other keypad phones. Settings → Report a problem drafts an email with the technical details (never your messages).
+
+Operator is an free-software project (GPL-3.0), not affiliated with Beeper, Matrix.org or any phone maker. It depends on Beeper's service. Donations (ko-fi.com/operatorchat) pay for a dedicated notification relay.
