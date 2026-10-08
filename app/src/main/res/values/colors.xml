@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Light variants of the four themes. Dark variants live in values-night.
+     My bubbles are solid colours that say how the message is doing: muted while
+     sending, the accent once sent, a green once read, red if it failed. -->
+<resources>
+    <!-- Operator: the brand. Beige paper, navy ink and focus; a warm tan for surfaces and the
+         focus band so highlights belong to the palette. Orange (darkened for text) only as accent. -->
+    <color name="operator_background">#FBF4E6</color>
+    <color name="operator_surface">#F0E4CC</color>
+    <color name="operator_text">#17243C</color>
+    <color name="operator_text_secondary">#5B6478</color>
+    <color name="operator_focus">#17243C</color>
+    <color name="operator_focus_text">#FBF4E6</color>
+    <color name="operator_focus_ring">#B317243C</color>
+    <color name="operator_focus_band">#E7D9B8</color>
+    <color name="operator_hairline">#E2D5B6</color>
+    <color name="operator_outline">#8A8F9C</color>
+    <color name="operator_accent">#D96400</color>
+    <color name="operator_bubble_theirs">#F0E4CC</color>
+    <color name="operator_bubble_sending">#8E97AA</color>
+    <color name="operator_bubble_sent">#17243C</color>
+    <color name="operator_bubble_read">#2F6F5E</color>
+    <color name="operator_bubble_failed">#A23B3B</color>
+    <color name="operator_bubble_mine_text">#FBF4E6</color>
+    <color name="operator_softkey_background">#FBF4E6</color>
+    <color name="operator_softkey_text">#17243C</color>
+
+    <!-- Switchboard: warm neutrals with the brand's amber highlight. -->
+    <color name="switchboard_background">#FFFFFF</color>
+    <color name="switchboard_surface">#F2F2F2</color>
+    <color name="switchboard_text">#000000</color>
+    <color name="switchboard_text_secondary">#5C5C5C</color>
+    <color name="switchboard_focus">@color/brand_accent</color>
+    <color name="switchboard_focus_text">#000000</color>
+    <color name="switchboard_hairline">#E4E4E4</color>
+    <color name="switchboard_outline">#6B6B6B</color>
+    <color name="switchboard_accent">@color/brand_accent</color>
+    <color name="switchboard_bubble_theirs">#F2F2F2</color>
+    <color name="switchboard_bubble_sending">#E6E0CC</color>
+    <color name="switchboard_bubble_sent">#FFC845</color>
+    <color name="switchboard_bubble_read">#9CCC65</color>
+    <color name="switchboard_bubble_failed">#EF9A9A</color>
+    <color name="switchboard_bubble_mine_text">#000000</color>
+    <color name="switchboard_softkey_background">#FFFFFF</color>
+    <color name="switchboard_softkey_text">#8A5A00</color>
+
+    <!-- Matrix: pale phosphor greens on near-white; the dark variant is the real thing. -->
+    <color name="matrix_background">#F3FBF3</color>
+    <color name="matrix_surface">#E1F3E1</color>
+    <color name="matrix_text">#062B0E</color>
+    <color name="matrix_text_secondary">#2F5E36</color>
+    <color name="matrix_focus">#0B8F3A</color>
+    <color name="matrix_focus_text">#FFFFFF</color>
+    <color name="matrix_hairline">#CFE6CF</color>
+    <color name="matrix_outline">#2E7D32</color>
+    <color name="matrix_accent">#0B8F3A</color>
+    <color name="matrix_bubble_theirs">#E1F3E1</color>
+    <color name="matrix_bubble_sending">#9DBBA0</color>
+    <color name="matrix_bubble_sent">#0B8F3A</color>
+    <color name="matrix_bubble_read">#00695C</color>
+    <color name="matrix_bubble_failed">#B23B3B</color>
+    <color name="matrix_bubble_mine_text">#FFFFFF</color>
+    <color name="matrix_softkey_background">#F3FBF3</color>
+    <color name="matrix_softkey_text">#0B8F3A</color>
+
+    <!-- High contrast: pure black on white, yellow focus, heavy outlines, no hairlines. -->
+    <color name="hc_background">#FBFBF8</color>
+    <color name="hc_surface">#FBFBF8</color>
+    <color name="hc_text">#0A0A0A</color>
+    <color name="hc_text_secondary">#0A0A0A</color>
+    <color name="hc_focus">#FFE100</color>
+    <color name="hc_focus_text">#0A0A0A</color>
+    <color name="hc_hairline">#00000000</color>
+    <color name="hc_outline">#0A0A0A</color>
+    <color name="hc_accent">#1F3FBF</color>
+    <color name="hc_bubble_theirs">#FFFFFF</color>
+    <color name="hc_bubble_sending">#FFFFFF</color>
+    <color name="hc_bubble_sent">#E6F0FF</color>
+    <color name="hc_bubble_read">#E0FFE0</color>
+    <color name="hc_bubble_failed">#FFE0E0</color>
+    <color name="hc_bubble_mine_text">#0A0A0A</color>
+    <color name="hc_softkey_background">#000000</color>
+    <color name="hc_softkey_text">#FFFFFF</color>
+
+    <!-- Slate: warm off-white paper with a deep blue highlight. -->
+    <color name="slate_background">#F7F6F2</color>
+    <color name="slate_surface">#ECEAE3</color>
+    <color name="slate_text">#1C1B19</color>
+    <color name="slate_text_secondary">#6B6860</color>
+    <color name="slate_focus">#1F3A5F</color>
+    <color name="slate_focus_text">#FFFFFF</color>
+    <color name="slate_hairline">#DDD9D0</color>
+    <color name="slate_outline">#8E8A82</color>
+    <color name="slate_accent">#1F3A5F</color>
+    <color name="slate_bubble_theirs">#E9E6DE</color>
+    <color name="slate_bubble_sending">#8C9BB0</color>
+    <color name="slate_bubble_sent">#1F3A5F</color>
+    <color name="slate_bubble_read">#2F6F5E</color>
+    <color name="slate_bubble_failed">#A23B3B</color>
+    <color name="slate_bubble_mine_text">#FFFFFF</color>
+    <color name="slate_softkey_background">#F7F6F2</color>
+    <color name="slate_softkey_text">#1F3A5F</color>
+
+    <!-- Focus on things that keep their own colour (bubbles, fields): a soft accent ring and a faint wash. -->
+    <color name="switchboard_focus_ring">#A68A5A00</color>
+    <color name="matrix_focus_ring">#A60B8F3A</color>
+    <color name="slate_focus_ring">#991F3A5F</color>
+    <color name="focus_tint">#14000000</color>
+    <color name="focus_ring_mine">#991C1B19</color>
+    <color name="focus_tint_mine">#24FFFFFF</color>
+    <color name="focus_band">#E6E3DA</color>
+
+    <!-- Glyph squares in Settings. -->
+    <color name="icon_blue">#3B6EA8</color>
+    <color name="icon_red">#C0392B</color>
+    <color name="icon_purple">#8E44AD</color>
+    <color name="icon_green">#27AE60</color>
+    <color name="icon_grey">#7F8C8D</color>
+
+    <!-- Avatar palette: muted tones that read on both light and dark paper. -->
+    <color name="avatar_1">#8A6D3B</color>
+    <color name="avatar_2">#A23B3B</color>
+    <color name="avatar_3">#2F6F5E</color>
+    <color name="avatar_4">#4E5D8A</color>
+    <color name="avatar_5">#6B4E8A</color>
+    <color name="avatar_6">#8A5A2F</color>
+    <color name="avatar_7">#3B7A8A</color>
+    <color name="avatar_8">#5E7A3B</color>
+</resources>

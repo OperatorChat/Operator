@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Operator mark: a switchboard operator's headset. Tinted with the accent colour. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48"
+    android:tint="?attr/opAccent">
+    <!-- headband -->
+    <path android:strokeColor="#FFFFFFFF" android:strokeWidth="4" android:strokeLineCap="round"
+        android:pathData="M8,28 A16,16 0 0 1 40,28" />
+    <!-- ear pads -->
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M5,26 h8 a2,2 0 0 1 2,2 v10 a2,2 0 0 1 -2,2 h-8 a2,2 0 0 1 -2,-2 v-10 a2,2 0 0 1 2,-2 z" />
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M35,26 h8 a2,2 0 0 1 2,2 v10 a2,2 0 0 1 -2,2 h-8 a2,2 0 0 1 -2,-2 v-10 a2,2 0 0 1 2,-2 z" />
+    <!-- boom microphone -->
+    <path android:strokeColor="#FFFFFFFF" android:strokeWidth="3" android:strokeLineCap="round"
+        android:pathData="M39,40 Q37,46 29,45" />
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M29,45 m-3.5,0 a3.5,3.5 0 1 0 7,0 a3.5,3.5 0 1 0 -7,0" />
+</vector>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A simple landscape (sun and hills) for the unloaded-photo placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="36dp"
+    android:viewportWidth="48"
+    android:viewportHeight="36">
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M36,8 m-5,0 a5,5 0 1 0 10,0 a5,5 0 1 0 -10,0" />
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M2,34 L16,14 L26,28 L32,21 L46,34 Z" />
+</vector>

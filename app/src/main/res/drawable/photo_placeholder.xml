@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- An unloaded photo: a soft blue-grey card with a small picture mark. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <size android:width="110dp" android:height="72dp" />
+            <gradient android:angle="315" android:startColor="#C9D3DF" android:endColor="#9FB0C4" />
+            <corners android:radius="9dp" />
+        </shape>
+    </item>
+    <item
+        android:drawable="@drawable/ic_photo_glyph"
+        android:gravity="center"
+        android:width="26dp"
+        android:height="20dp" />
+</layer-list>

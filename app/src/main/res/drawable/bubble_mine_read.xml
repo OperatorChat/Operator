@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated shape: the bubble keeps its colour; focus is a soft ring in the 3dp frame round it
+     plus a faint wash over the bubble, so it shifts a shade without changing size. My own bubbles
+     use the lighter ring and wash (opFocusRingMine / opFocusTintMine). -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android" android:exitFadeDuration="@integer/focus_fade_ms">
+    <item android:state_focused="true">
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@android:color/transparent" />
+                    <stroke android:width="2dp" android:color="?attr/opFocusRingMine" />
+                    <corners android:topLeftRadius="17dp" android:topRightRadius="17dp" android:bottomLeftRadius="17dp" android:bottomRightRadius="7dp" />
+                </shape>
+            </item>
+            <item android:left="3dp" android:top="3dp" android:right="3dp" android:bottom="3dp">
+                <shape android:shape="rectangle">
+                    <solid android:color="?attr/opBubbleMineRead" />
+                    <stroke android:width="?attr/opOutlineWidth" android:color="?attr/opOutline" />
+                    <corners android:topLeftRadius="@dimen/bubble_radius" android:topRightRadius="@dimen/bubble_radius" android:bottomLeftRadius="@dimen/bubble_radius" android:bottomRightRadius="@dimen/bubble_tail_radius" />
+                </shape>
+            </item>
+            <item android:left="3dp" android:top="3dp" android:right="3dp" android:bottom="3dp">
+                <shape android:shape="rectangle">
+                    <solid android:color="?attr/opFocusTintMine" />
+                    <corners android:topLeftRadius="@dimen/bubble_radius" android:topRightRadius="@dimen/bubble_radius" android:bottomLeftRadius="@dimen/bubble_radius" android:bottomRightRadius="@dimen/bubble_tail_radius" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item>
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@android:color/transparent" />
+                    <stroke android:width="2dp" android:color="@android:color/transparent" />
+                    <corners android:topLeftRadius="17dp" android:topRightRadius="17dp" android:bottomLeftRadius="17dp" android:bottomRightRadius="7dp" />
+                </shape>
+            </item>
+            <item android:left="3dp" android:top="3dp" android:right="3dp" android:bottom="3dp">
+                <shape android:shape="rectangle">
+                    <solid android:color="?attr/opBubbleMineRead" />
+                    <stroke android:width="?attr/opOutlineWidth" android:color="?attr/opOutline" />
+                    <corners android:topLeftRadius="@dimen/bubble_radius" android:topRightRadius="@dimen/bubble_radius" android:bottomLeftRadius="@dimen/bubble_radius" android:bottomRightRadius="@dimen/bubble_tail_radius" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

@@ -1,0 +1,6 @@
+First public beta.
+• Local database and session encrypted at rest (key in the Android keystore).
+• Settings → Report a problem drafts an email with device and version details, never message content.
+• The push relay server can be changed for people running their own ntfy.
+• App packages sent in chats are saved to Downloads rather than opened; no install permission requested.
+• Privacy policy, FAQ and user guide.

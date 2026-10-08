@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Operator redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --page:#ECEBE6; --ink:#1C1B19; --mute:#6B6860;
+  --bg:#F7F6F2; --surface:#ECEAE3; --text:#1C1B19; --sec:#6B6860; --hair:#DDD9D0;
+  --accent:#1F3A5F; --accent-ink:#FFFFFF; --tint:#E3E9F2;
+  --mine:#1F3A5F; --theirs:#E9E6DE;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:Inter,-apple-system,system-ui,sans-serif;padding:24px 16px 48px}
+h1{font-size:22px;font-weight:600;margin:0 0 4px}
+h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:40px 0 14px}
+p.lead{margin:0 0 8px;color:var(--mute);font-size:14px;max-width:70ch}
+.row{display:flex;flex-wrap:wrap;gap:28px 24px;align-items:flex-start}
+.shot{display:flex;flex-direction:column;gap:8px}
+.shot .cap{font-size:12px;color:var(--mute);max-width:360px;line-height:1.4}
+.shot .cap b{color:var(--ink);font-weight:600;display:block;margin-bottom:2px}
+.shot img{width:360px;height:480px;image-rendering:pixelated;border-radius:6px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+/* ---- the phone canvas: exactly 240×320 CSS px, shown at 1.5× ---- */
+.phone{width:240px;height:320px;zoom:1.5;background:var(--bg);color:var(--text);overflow:hidden;border-radius:4px;box-shadow:0 7px 20px rgba(0,0,0,.18);display:flex;flex-direction:column;font-size:12px;line-height:1.25;position:relative;-webkit-font-smoothing:antialiased}
+.phone.dark{--bg:#15171B;--surface:#20242B;--text:#F2F1EC;--sec:#9A9890;--hair:#2C313A;--accent:#8FB4E8;--accent-ink:#0E1A2B;--tint:#243247;--mine:#2F5A90;--theirs:#23272F}
+.status{height:16px;display:flex;align-items:center;justify-content:space-between;padding:0 6px;font-size:9px;font-weight:600;color:var(--sec)}
+.status .r{display:flex;gap:4px;align-items:center}
+.header{height:30px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 10px 6px}
+.header .t{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.header .s{font-size:10px;color:var(--sec);font-weight:500}
+.body{flex:1;min-height:0;overflow:hidden;position:relative}
+.softkeys{height:22px;border-top:1px solid var(--hair);display:flex;align-items:center;justify-content:space-between;padding:0 10px;font-size:11px;font-weight:600;color:var(--accent)}
+.nav{height:24px;display:flex;align-items:center;justify-content:center;gap:34px;color:var(--text);opacity:.75}
+.nav i{display:block}
+.nav .b{width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:8px solid currentColor}
+.nav .h{width:9px;height:9px;border-radius:50%;background:currentColor}
+.nav .q{width:8px;height:8px;background:currentColor;border-radius:1px}
+/* chat list */
+.item{display:flex;align-items:center;gap:7px;padding:2px 8px 2px 8px;margin:0 4px;border-radius:9px}
+.item + .item .txt{border-top:1px solid var(--hair)}
+.item .txt{flex:1;min-width:0;padding:3px 0}
+.item.f{background:var(--accent);color:var(--accent-ink);margin:0 4px}
+.item.f .txt,.item.f + .item .txt{border-top-color:transparent}
+.item.f .sec,.item.f .time{color:var(--accent-ink);opacity:.78}
+.av{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:11px;color:#fff;letter-spacing:.02em}
+.l1{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.name{font-weight:600;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.time{font-size:9.5px;color:var(--sec);flex:none}
+.l2{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:1px}
+.sec{font-size:10.5px;color:var(--sec);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.unread .name{font-weight:700}
+.unread .sec{color:var(--text)}
+.badge{flex:none;min-width:15px;height:15px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.item.f .badge{background:var(--accent-ink);color:var(--accent)}
+.pin{font-size:9px;color:var(--sec);margin-left:3px}
+/* chat */
+.msgs{display:flex;flex-direction:column;gap:3px;padding:4px 8px;justify-content:flex-end;height:100%}
+.date{align-self:center;font-size:9px;color:var(--sec);background:var(--surface);padding:1px 7px;border-radius:7px;margin:2px 0}
+.bub{max-width:180px;padding:5px 8px 4px;border-radius:12px;font-size:12px;position:relative}
+.bub .m{display:flex;justify-content:flex-end;gap:3px;font-size:8.5px;opacity:.65;margin-top:1px}
+.theirs{align-self:flex-start;background:var(--theirs);border-bottom-left-radius:4px}
+.mine{align-self:flex-end;background:var(--mine);color:#fff;border-bottom-right-radius:4px}
+.bub.f{outline:2px solid var(--accent);outline-offset:2px}
+.dark .bub.f{outline-color:var(--accent)}
+.photo{width:110px;height:70px;border-radius:8px;background:linear-gradient(135deg,#C9D3DF,#9FB0C4);display:flex;align-items:center;justify-content:center;margin:-1px -2px 3px}
+.photo i{width:18px;height:14px;border:2px solid rgba(255,255,255,.9);border-radius:2px;display:block}
+.compose{display:flex;align-items:center;margin:4px 8px 4px;height:24px;border-radius:12px;border:1px solid var(--hair);background:var(--surface);padding:0 10px;color:var(--sec);font-size:12px}
+.compose.f{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;color:var(--sec)}
+.compose .caret{width:1px;height:12px;background:var(--text);margin-left:1px}
+/* settings */
+.group{margin:4px 8px 8px;background:var(--surface);border-radius:10px;overflow:hidden}
+.srow{display:flex;align-items:center;gap:8px;padding:6px 8px}
+.srow + .srow{border-top:1px solid var(--hair);margin-left:38px;padding-left:0}
+.srow.f{background:var(--accent);color:var(--accent-ink);margin-left:0;padding-left:8px;border-top-color:transparent}
+.srow.f .sub{color:var(--accent-ink);opacity:.78}
+.srow.f .chev{color:var(--accent-ink)}
+.ic{width:22px;height:22px;border-radius:6px;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+.srow .tt{flex:1;min-width:0}
+.srow .ti{font-size:12px;font-weight:600}
+.srow .sub{font-size:9.5px;color:var(--sec);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chev{color:var(--sec);font-size:12px}
+/* welcome */
+.welcome{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:0 18px;text-align:center}
+.mark{width:52px;height:52px;border-radius:16px;background:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.mark svg{width:30px;height:30px}
+.wordmark{font-size:20px;font-weight:700;letter-spacing:-.02em}
+.tag{font-size:11px;color:var(--sec);margin-top:3px}
+.btn{margin-top:28px;width:100%;height:28px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:12px;display:flex;align-items:center;justify-content:center}
+.btn.ghost{background:transparent;color:var(--accent);margin-top:6px}
+/* menu/options */
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--bg);border-top-left-radius:14px;border-top-right-radius:14px;box-shadow:0 -6px 20px rgba(0,0,0,.18);padding:6px 6px 4px}
+.sheet .h{text-align:center;font-size:10px;font-weight:600;color:var(--sec);padding:2px 0 5px}
+.opt{padding:6px 10px;border-radius:8px;font-size:12.5px;font-weight:500}
+.opt.f{background:var(--accent);color:var(--accent-ink)}
+.dim{position:absolute;inset:0;background:rgba(0,0,0,.25)}
+.notes{columns:2;column-gap:40px;max-width:1100px;font-size:14px;line-height:1.5}
+.notes li{break-inside:avoid;margin-bottom:8px}
+.notes b{font-weight:600}
+@media (max-width:800px){.notes{columns:1}.shot img{width:240px;height:320px}.phone{zoom:1}}
+</style>
+</head>
+<body>
+<h1>Operator: a quieter, more polished look</h1>
+<p class="lead">Same screens, same keys, same behaviour. Every mockup below is drawn at the test phone's real 240 × 320 pixel canvas, then enlarged 1.5× so it's readable here. The "today" row describes the pre-redesign screens (the original screenshots showed real conversations and are not included). All names and messages in the mockups are invented.</p>
+
+<h2>Today</h2>
+<div class="row">
+  <div class="shot"><div class="cap"><b>Chat list</b>Every row is a boxed card with a grey outline. Nothing to tell people apart. The black soft‑key bar and black Android bar stack into a heavy base.</div></div>
+  <div class="shot"><div class="cap"><b>Chat</b>Outlined bubbles, a boxed compose field, a grey placeholder photo.</div></div>
+  <div class="shot"><div class="cap"><b>Settings</b>Boxes again. Functional, but it's the same shape as everything else.</div></div>
+</div>
+
+<h2>Proposed</h2>
+<div class="row">
+
+  <!-- Chat list -->
+  <div class="shot">
+  <div class="phone">
+    <div class="status"><span>17:26</span><span class="r">▲ ▮ 98%</span></div>
+    <div class="header"><span class="t">Chats</span><span class="s">3 unread</span></div>
+    <div class="body">
+      <div class="item f"><div class="av" style="background:#8A6D3B">S</div><div class="txt"><div class="l1"><span class="name">Note to self <span class="pin">●</span></span><span class="time">Yesterday</span></div><div class="l2"><span class="sec">Photo</span></div></div></div>
+      <div class="item unread"><div class="av" style="background:#A23B3B">C</div><div class="txt"><div class="l1"><span class="name">🎬 CINEMA 🍿</span><span class="time">14:02</span></div><div class="l2"><span class="sec">Maya: Saturday 7pm works for us</span><span class="badge">2</span></div></div></div>
+      <div class="item unread"><div class="av" style="background:#2F6F5E">F</div><div class="txt"><div class="l1"><span class="name">Family</span><span class="time">13:34</span></div><div class="l2"><span class="sec">Dan: On the train now</span><span class="badge">1</span></div></div></div>
+      <div class="item"><div class="av" style="background:#4E5D8A">AM</div><div class="txt"><div class="l1"><span class="name">Priya Nair</span><span class="time">13:03</span></div><div class="l2"><span class="sec">You: Perfect, thanks ✓✓</span></div></div></div>
+      <div class="item"><div class="av" style="background:#6B4E8A">AS</div><div class="txt"><div class="l1"><span class="name">Sam Okafor</span><span class="time">12:07</span></div><div class="l2"><span class="sec">Sounds good</span></div></div></div>
+      <div class="item"><div class="av" style="background:#8A5A2F">FN</div><div class="txt"><div class="l1"><span class="name">Jonas Lindqvist</span><span class="time">10:10</span></div><div class="l2"><span class="sec">Voice note</span></div></div></div>
+      <div class="item"><div class="av" style="background:#3B7A8A">R</div><div class="txt"><div class="l1"><span class="name">Tom</span><span class="time">09:27</span></div><div class="l2"><span class="sec">👍</span></div></div></div>
+    </div>
+    <div class="softkeys"><span>Options</span><span>New chat</span></div>
+    <div class="nav"><i class="b"></i><i class="h"></i><i class="q"></i></div>
+  </div>
+  <div class="cap"><b>Chat list</b>Outlines gone; a hairline separates rows. Coloured initials give each chat a face. Unread chats go bold with a count pill instead of a stripe. The selected row is a solid rounded block, so the D‑pad position is never in doubt. The status bar, soft keys and Android bar all take the paper colour, so the screen reads as one surface.</div>
+  </div>
+
+  <!-- Chat -->
+  <div class="shot">
+  <div class="phone">
+    <div class="status"><span>17:26</span><span class="r">▲ ▮ 98%</span></div>
+    <div class="header"><span class="t">Maya</span><span class="s">WhatsApp</span></div>
+    <div class="body">
+      <div class="msgs">
+        <div class="date">Today</div>
+        <div class="bub theirs">Are we still on for the cinema?<div class="m">14:01</div></div>
+        <div class="bub mine">Yes! Saturday 7pm works for us<div class="m">14:02 ✓✓</div></div>
+        <div class="bub theirs f"><div class="photo"><i></i></div>Here's the poster<div class="m">14:03</div></div>
+              </div>
+    </div>
+    <div class="compose">Message</div>
+    <div class="softkeys"><span>Options</span><span>Back</span></div>
+    <div class="nav"><i class="b"></i><i class="h"></i><i class="q"></i></div>
+  </div>
+  <div class="cap"><b>Chat</b>Flat bubbles: mine in the accent, theirs in soft grey, no borders. Delivery state stays as ticks (and a quieter tint for sending/failed) rather than four different bubble colours. The focused message gets a thin accent ring instead of being repainted. The compose field is a pill. Thumbnails sit inside the bubble with rounded corners.</div>
+  </div>
+
+  <!-- Settings -->
+  <div class="shot">
+  <div class="phone">
+    <div class="status"><span>17:26</span><span class="r">▲ ▮ 98%</span></div>
+    <div class="header"><span class="t">Settings</span></div>
+    <div class="body">
+      <div class="group">
+        <div class="srow f"><div class="ic" style="background:#fff;color:#1F3A5F">@</div><div class="tt"><div class="ti">Account</div><div class="sub">@yourname:beeper.com</div></div><span class="chev">›</span></div>
+        <div class="srow"><div class="ic" style="background:#C0392B">🔔</div><div class="tt"><div class="ti">Notifications</div></div><span class="chev">›</span></div>
+        <div class="srow"><div class="ic" style="background:#8E44AD">◐</div><div class="tt"><div class="ti">Appearance</div><div class="sub">Slate · Light · Normal text</div></div><span class="chev">›</span></div>
+      </div>
+      <div class="group">
+        <div class="srow"><div class="ic" style="background:#27AE60">✓</div><div class="tt"><div class="ti">Set up your phone</div><div class="sub">Battery and background permissions</div></div><span class="chev">›</span></div>
+        <div class="srow"><div class="ic" style="background:#7F8C8D">i</div><div class="tt"><div class="ti">About</div><div class="sub">Operator 0.1.0</div></div><span class="chev">›</span></div>
+      </div>
+    </div>
+    <div class="softkeys"><span>Select</span><span>Back</span></div>
+    <div class="nav"><i class="b"></i><i class="h"></i><i class="q"></i></div>
+  </div>
+  <div class="cap"><b>Settings</b>Grouped lists in the iOS style: rounded groups, a small coloured glyph per row, a chevron, and the current value shown as a subtitle so you don't have to open a page to see it.</div>
+  </div>
+
+  <!-- Options sheet -->
+  <div class="shot">
+  <div class="phone">
+    <div class="status"><span>17:26</span><span class="r">▲ ▮ 98%</span></div>
+    <div class="header"><span class="t">Chats</span><span class="s">3 unread</span></div>
+    <div class="body">
+      <div class="item"><div class="av" style="background:#8A6D3B">S</div><div class="txt"><div class="l1"><span class="name">Note to self</span><span class="time">Yesterday</span></div><div class="l2"><span class="sec">Photo</span></div></div></div>
+      <div class="item unread"><div class="av" style="background:#A23B3B">C</div><div class="txt"><div class="l1"><span class="name">🎬 CINEMA 🍿</span><span class="time">14:02</span></div><div class="l2"><span class="sec">Maya: Saturday 7pm works</span><span class="badge">2</span></div></div></div>
+      <div class="item unread"><div class="av" style="background:#2F6F5E">F</div><div class="txt"><div class="l1"><span class="name">Family</span><span class="time">13:34</span></div><div class="l2"><span class="sec">Dan: On the train now</span><span class="badge">1</span></div></div></div>
+      <div class="dim"></div>
+      <div class="sheet">
+        <div class="h">Note to self</div>
+        <div class="opt f">Mark as read</div>
+        <div class="opt">Unpin</div>
+        <div class="opt">Mute</div>
+        <div class="opt">Settings</div>
+      </div>
+    </div>
+    <div class="softkeys"><span>Select</span><span>Back</span></div>
+    <div class="nav"><i class="b"></i><i class="h"></i><i class="q"></i></div>
+  </div>
+  <div class="cap"><b>Options</b>The options menu rises as a sheet over the dimmed list rather than replacing the whole screen, so you keep your bearings. Same items, same keys. Short menus fit; longer ones scroll.</div>
+  </div>
+
+  <!-- Welcome -->
+  <div class="shot">
+  <div class="phone">
+    <div class="status"><span>17:26</span><span class="r">▲ ▮ 98%</span></div>
+    <div class="body">
+      <div class="welcome">
+        <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M19 19v1a2 2 0 0 1-2 2h-4"/></svg></div>
+        <div class="wordmark">Operator</div>
+        <div class="tag">There is no smartphone.</div>
+        <div class="btn">Sign in with Beeper</div>
+        <div class="btn ghost">Another Matrix server</div>
+      </div>
+    </div>
+    <div class="softkeys"><span></span><span>Exit</span></div>
+    <div class="nav"><i class="b"></i><i class="h"></i><i class="q"></i></div>
+  </div>
+  <div class="cap"><b>Welcome</b>A rounded app mark, the wordmark, your line, and a pill button. Nothing else. The secondary action becomes a text button so the primary one is obvious.</div>
+  </div>
+
+  <!-- Dark -->
+  <div class="shot">
+  <div class="phone dark">
+    <div class="status"><span>22:14</span><span class="r">▲ ▮ 61%</span></div>
+    <div class="header"><span class="t">Chats</span><span class="s">1 unread</span></div>
+    <div class="body">
+      <div class="item"><div class="av" style="background:#8A6D3B">S</div><div class="txt"><div class="l1"><span class="name">Note to self <span class="pin">●</span></span><span class="time">Yesterday</span></div><div class="l2"><span class="sec">Photo</span></div></div></div>
+      <div class="item f unread"><div class="av" style="background:#A23B3B">C</div><div class="txt"><div class="l1"><span class="name">🎬 CINEMA 🍿</span><span class="time">14:02</span></div><div class="l2"><span class="sec">Maya: Saturday 7pm works</span><span class="badge">2</span></div></div></div>
+      <div class="item"><div class="av" style="background:#2F6F5E">F</div><div class="txt"><div class="l1"><span class="name">Family</span><span class="time">13:34</span></div><div class="l2"><span class="sec">Dan: On the train now</span></div></div></div>
+      <div class="item"><div class="av" style="background:#4E5D8A">AM</div><div class="txt"><div class="l1"><span class="name">Priya Nair</span><span class="time">13:03</span></div><div class="l2"><span class="sec">You: Perfect, thanks ✓✓</span></div></div></div>
+      <div class="item"><div class="av" style="background:#6B4E8A">AS</div><div class="txt"><div class="l1"><span class="name">Sam Okafor</span><span class="time">12:07</span></div><div class="l2"><span class="sec">Sounds good</span></div></div></div>
+      <div class="item"><div class="av" style="background:#8A5A2F">FN</div><div class="txt"><div class="l1"><span class="name">Jonas Lindqvist</span><span class="time">10:10</span></div><div class="l2"><span class="sec">Voice note</span></div></div></div>
+    </div>
+    <div class="softkeys"><span>Options</span><span>New chat</span></div>
+    <div class="nav"><i class="b"></i><i class="h"></i><i class="q"></i></div>
+  </div>
+  <div class="cap"><b>Slate, dark</b>The same layout in the dark variant: charcoal paper, a lighter blue for the selected row so it stays legible. All four themes and all three text sizes carry over because the redesign only touches layouts and theme attributes.</div>
+  </div>
+</div>
+
+<h2>What actually changes</h2>
+<ol class="notes">
+  <li><b>Kill the boxes.</b> Rows, bubbles and fields lose their outlines (outline width becomes 0 in the three normal themes; High contrast keeps its heavy strokes). Separation comes from spacing and a hairline.</li>
+  <li><b>One surface.</b> The status bar and Android navigation bar are painted the theme background with dark (or light) icons, and the soft‑key bar becomes a hairline‑topped strip in the same colour with accent‑coloured labels. This is one of the biggest wins and costs almost nothing.</li>
+  <li><b>A real typeface.</b> Bundle Inter (open licence, ~300 KB) with weights 400/600/700. Roboto on a 120 dpi panel is what makes it feel like an old Android; Inter at 12–16 sp stays crisp and has a proper semibold.</li>
+  <li><b>Avatars.</b> A coloured circle with one or two initials, colour picked from a fixed palette by hashing the chat name, so it's stable. Room avatars from Matrix can replace it later; nothing in the data layer changes.</li>
+  <li><b>Hierarchy in the list.</b> Name semibold, preview and time in the secondary colour, unread as bold + count pill. The header shows the screen's name and a small summary rather than repeating the focused row.</li>
+  <li><b>Bubbles.</b> Mine in the accent with white text, theirs in soft grey. Delivery state is shown by ticks, with only two colour exceptions: a paler tint while sending and a red tint on failure. The focused message gets a 2 dp accent ring, so it isn't recoloured.</li>
+  <li><b>Settings as grouped lists</b> with a small coloured glyph and the current value as a subtitle.</li>
+  <li><b>Options as a sheet</b> that rises over the dimmed screen, instead of a full screen of boxes.</li>
+  <li><b>Motion, lightly.</b> Focus moves with a 120 ms colour fade, screens slide in from the right and back out, the sheet slides up. All standard View animations, cheap enough for the test phone's chip; a setting can turn them off.</li>
+  <li><b>Nothing functional moves.</b> Same key map, same soft‑key labels, same menus and items, same themes and text sizes. It's layouts, drawables, colours and one font.</li>
+</ol>
+<p class="lead" style="margin-top:12px">Rough effort: the surface, boxes, typeface and avatars are a day; bubbles, settings groups and the sheet are another; motion and a pass over the onboarding screens a third. It can land as small commits with the test phone checked after each.</p>
+</body>
+</html>

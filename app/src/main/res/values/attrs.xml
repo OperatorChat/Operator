@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Every colour and text size the UI uses comes from the active theme (SPEC §7). -->
+<resources>
+    <attr name="opBackground" format="color" />
+    <attr name="opSurface" format="color" />
+    <attr name="opText" format="color" />
+    <attr name="opTextSecondary" format="color" />
+    <attr name="opFocus" format="color" />
+    <attr name="opFocusText" format="color" />
+    <!-- Ring drawn round a focused item that keeps its own colour (bubbles, fields). -->
+    <attr name="opFocusRing" format="color" />
+    <!-- Translucent wash laid over a focused bubble so it shifts a shade as well as gaining the ring. -->
+    <attr name="opFocusTint" format="color" />
+    <!-- Ring and wash for my own (accent-coloured) bubbles, which need a lighter treatment to show. -->
+    <attr name="opFocusRingMine" format="color" />
+    <attr name="opFocusTintMine" format="color" />
+    <!-- Band drawn across the row behind a focused message, so the selection shows whatever the bubble's colour. -->
+    <attr name="opFocusBand" format="color" />
+    <!-- Thin separators between rows; transparent in High contrast, which uses outlines instead. -->
+    <attr name="opHairline" format="color" />
+    <attr name="opOutline" format="color" />
+    <attr name="opAccent" format="color" />
+    <attr name="opBubbleTheirs" format="color" />
+    <attr name="opBubbleMineSending" format="color" />
+    <attr name="opBubbleMineSent" format="color" />
+    <attr name="opBubbleMineRead" format="color" />
+    <attr name="opBubbleMineFailed" format="color" />
+    <!-- Text on my bubbles (they are coloured; theirs use opText). -->
+    <attr name="opBubbleMineText" format="color" />
+    <attr name="opSoftkeyBackground" format="color" />
+    <attr name="opSoftkeyText" format="color" />
+    <attr name="opOutlineWidth" format="dimension" />
+    <attr name="opTextTitle" format="dimension" />
+    <attr name="opTextBody" format="dimension" />
+    <attr name="opTextSmall" format="dimension" />
+</resources>

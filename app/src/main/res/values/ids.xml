@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- A rounded group of menu rows, created in code by MenuScreen. -->
+    <item name="group" type="id" />
+    <!-- A screen root's descendantFocusability, saved while an options sheet covers it. -->
+    <item name="saved_focusability" type="id" />
+    <!-- The emoji grid inside an options sheet. -->
+    <item name="grid" type="id" />
+</resources>

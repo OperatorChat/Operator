@@ -1,0 +1,54 @@
+[versions]
+# Toolchain pinned to the combination proven with Trixnity 5.8.0 in fenleon/chats.
+agp = "8.12.3"
+kotlin = "2.3.20"
+kotlinx-coroutines = "1.11.0"
+kotlinx-serialization = "1.9.0"
+ktor = "3.5.2"
+room = "2.8.4"
+trixnity = "5.8.0"
+unifiedpush = "3.3.2"
+appcompat = "1.7.1"
+recyclerview = "1.4.0"
+activity = "1.13.0"
+lifecycle = "2.9.4"
+core-ktx = "1.17.0"
+exifinterface = "1.4.1"
+sqlcipher = "4.19.1"
+junit = "4.13.2"
+
+[libraries]
+kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+
+# Trixnity Matrix SDK: login/sync, Room-backed store, media, libolm crypto driver.
+trixnity-client = { module = "de.connect2x.trixnity:trixnity-client", version.ref = "trixnity" }
+trixnity-repository-room = { module = "de.connect2x.trixnity:trixnity-client-repository-room", version.ref = "trixnity" }
+trixnity-media-okio = { module = "de.connect2x.trixnity:trixnity-client-media-okio", version.ref = "trixnity" }
+trixnity-cryptodriver-libolm = { module = "de.connect2x.trixnity:trixnity-client-cryptodriver-libolm", version.ref = "trixnity" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+
+# At-rest encryption: SQLCipher for the Room store (the key lives in the Android keystore; see SessionVault).
+sqlcipher-android = { module = "net.zetetic:sqlcipher-android", version.ref = "sqlcipher" }
+
+# UnifiedPush app-side connector (external distributors: ntfy, Sunup, firmware).
+unifiedpush-connector = { module = "org.unifiedpush.android:connector", version.ref = "unifiedpush" }
+
+# UI: Android Views only (no Compose, no Material Components; see SPEC §4.3).
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "exifinterface" }
+
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+junit = { module = "junit:junit", version.ref = "junit" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

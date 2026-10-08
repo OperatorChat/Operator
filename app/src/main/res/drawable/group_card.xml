@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A group of settings rows: a rounded surface on the paper. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="?attr/opSurface" />
+    <stroke android:width="?attr/opOutlineWidth" android:color="?attr/opOutline" />
+    <corners android:radius="@dimen/row_radius" />
+</shape>

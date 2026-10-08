@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Branding for the default "operator" flavour (SPEC §4.4).
+  A manufacturer flavour overrides this file (and the launcher icon) and nothing else.
+-->
+<resources>
+    <string name="app_name">Operator</string>
+    <string name="brand_default_homeserver">https://matrix.beeper.com</string>
+    <string name="brand_default_push_server">https://ntfy.sh</string>
+    <string name="brand_support_url">https://github.com/OperatorChat/Operator</string>
+    <!-- Where "Report a problem" sends its email. -->
+    <string name="brand_support_email">unsaved-fax-even@duck.com</string>
+    <!-- Donations page; leave empty to hide the "Support Operator" row. -->
+    <string name="brand_donate_url">https://ko-fi.com/operatorchat</string>
+    <!-- GitHub Sponsors page; leave empty to hide its row. -->
+    <string name="brand_sponsors_url">https://github.com/sponsors/OperatorChat</string>
+    <string name="brand_about">Operator is an independent open-source project. It is not affiliated with Beeper or Matrix.org.</string>
+
+    <color name="brand_accent">#FFB300</color>
+    <color name="brand_accent_dark">#FFC845</color>
+    <color name="brand_icon_background">#FBF4E6</color>
+</resources>

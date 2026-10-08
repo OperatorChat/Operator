@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dark variants of the four themes. -->
+<resources>
+    <!-- Operator, dark: navy paper, beige ink, beige focus and highlights (orange lives in the logo). -->
+    <color name="operator_background">#17243C</color>
+    <color name="operator_surface">#22314F</color>
+    <color name="operator_text">#FBF4E6</color>
+    <color name="operator_text_secondary">#B8B2A4</color>
+    <color name="operator_focus">#FBF4E6</color>
+    <color name="operator_focus_text">#17243C</color>
+    <color name="operator_focus_ring">#B3FBF4E6</color>
+    <color name="operator_focus_band">#2A3B5E</color>
+    <color name="operator_hairline">#2C3B57</color>
+    <color name="operator_outline">#6B7690</color>
+    <color name="operator_accent">#FBF4E6</color>
+    <color name="operator_bubble_theirs">#22314F</color>
+    <color name="operator_bubble_sending">#4A5872</color>
+    <color name="operator_bubble_sent">#3B5A8F</color>
+    <color name="operator_bubble_read">#2E6B5A</color>
+    <color name="operator_bubble_failed">#8A3A3A</color>
+    <color name="operator_bubble_mine_text">#FBF4E6</color>
+    <color name="operator_softkey_background">#17243C</color>
+    <color name="operator_softkey_text">#FBF4E6</color>
+
+    <color name="switchboard_background">#000000</color>
+    <color name="switchboard_surface">#1B1B1B</color>
+    <color name="switchboard_text">#FFFFFF</color>
+    <color name="switchboard_text_secondary">#B8B8B8</color>
+    <color name="switchboard_focus">@color/brand_accent_dark</color>
+    <color name="switchboard_focus_text">#000000</color>
+    <color name="switchboard_hairline">#2A2A2A</color>
+    <color name="switchboard_outline">#888888</color>
+    <color name="switchboard_accent">@color/brand_accent_dark</color>
+    <color name="switchboard_bubble_theirs">#1B1B1B</color>
+    <color name="switchboard_bubble_sending">#3A3A3A</color>
+    <color name="switchboard_bubble_sent">#B07D00</color>
+    <color name="switchboard_bubble_read">#4F7A2A</color>
+    <color name="switchboard_bubble_failed">#8A3030</color>
+    <color name="switchboard_bubble_mine_text">#FFFFFF</color>
+    <color name="switchboard_softkey_background">#000000</color>
+    <color name="switchboard_softkey_text">@color/brand_accent_dark</color>
+
+    <!-- Matrix, dark: phosphor green on near-black. -->
+    <color name="matrix_background">#070B08</color>
+    <color name="matrix_surface">#10190F</color>
+    <color name="matrix_text">#CFEBD0</color>
+    <color name="matrix_text_secondary">#7FB889</color>
+    <color name="matrix_focus">#2BB25A</color>
+    <color name="matrix_focus_text">#04150A</color>
+    <color name="matrix_hairline">#17261A</color>
+    <color name="matrix_outline">#3A7A48</color>
+    <color name="matrix_accent">#2BB25A</color>
+    <color name="matrix_bubble_theirs">#10190F</color>
+    <color name="matrix_bubble_sending">#2A3A2C</color>
+    <color name="matrix_bubble_sent">#1E7A3F</color>
+    <color name="matrix_bubble_read">#1B5E4E</color>
+    <color name="matrix_bubble_failed">#7A2E2E</color>
+    <color name="matrix_bubble_mine_text">#E8FFE8</color>
+    <color name="matrix_softkey_background">#070B08</color>
+    <color name="matrix_softkey_text">#2BB25A</color>
+
+    <!-- Not pure black/white: off-white on near-black navy avoids glare and halation. -->
+    <color name="hc_background">#0A0C12</color>
+    <color name="hc_surface">#0A0C12</color>
+    <color name="hc_text">#F4F4F2</color>
+    <color name="hc_text_secondary">#F4F4F2</color>
+    <color name="hc_focus">#FFD60A</color>
+    <color name="hc_focus_text">#0A0C12</color>
+    <color name="hc_hairline">#00000000</color>
+    <color name="hc_outline">#F4F4F2</color>
+    <color name="hc_accent">#FFD60A</color>
+    <color name="hc_bubble_theirs">#0A0C12</color>
+    <color name="hc_bubble_sending">#0A0C12</color>
+    <color name="hc_bubble_sent">#0E1F3D</color>
+    <color name="hc_bubble_read">#0E3320</color>
+    <color name="hc_bubble_failed">#3D0E0E</color>
+    <color name="hc_bubble_mine_text">#F4F4F2</color>
+    <color name="hc_softkey_background">#F4F4F2</color>
+    <color name="hc_softkey_text">#0A0C12</color>
+
+    <color name="switchboard_focus_ring">#B3FFC845</color>
+    <color name="matrix_focus_ring">#B32BB25A</color>
+    <color name="slate_focus_ring">#B38FB4E8</color>
+    <color name="focus_tint">#1FFFFFFF</color>
+    <color name="focus_ring_mine">#B3F2F1EC</color>
+    <color name="focus_tint_mine">#26FFFFFF</color>
+    <color name="focus_band">#262A31</color>
+
+    <!-- Slate, dark: graphite with a sky-blue highlight. -->
+    <color name="slate_background">#15171A</color>
+    <color name="slate_surface">#20242B</color>
+    <color name="slate_text">#F2F1EC</color>
+    <color name="slate_text_secondary">#9A9890</color>
+    <color name="slate_focus">#8FB4E8</color>
+    <color name="slate_focus_text">#0E1A2B</color>
+    <color name="slate_hairline">#2C313A</color>
+    <color name="slate_outline">#5C636D</color>
+    <color name="slate_accent">#8FB4E8</color>
+    <color name="slate_bubble_theirs">#23272F</color>
+    <color name="slate_bubble_sending">#3A4556</color>
+    <color name="slate_bubble_sent">#2F5A90</color>
+    <color name="slate_bubble_read">#2E6B5A</color>
+    <color name="slate_bubble_failed">#8A3A3A</color>
+    <color name="slate_bubble_mine_text">#F2F1EC</color>
+    <color name="slate_softkey_background">#15171A</color>
+    <color name="slate_softkey_text">#8FB4E8</color>
+</resources>

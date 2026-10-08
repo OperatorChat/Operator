@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Where the camera app writes a photo taken for Operator (app cache, cleared after sending). -->
+<paths>
+    <cache-path name="camera" path="camera/" />
+    <!-- Attachments handed to another app to open (app cache, cleared on the next open). -->
+    <cache-path name="shared" path="shared/" />
+</paths>

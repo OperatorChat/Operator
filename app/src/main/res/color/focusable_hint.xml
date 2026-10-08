@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Placeholder text: readable on the focus colour too (it was grey on amber). -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:alpha="0.75" android:color="?attr/opFocusText" />
+    <item android:color="?attr/opTextSecondary" />
+</selector>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One message. The row is the focusable item; the bubble inside takes the
+     row's focus state (duplicateParentState) and shows it as a ring round
+     itself. Mine sit on the right, everyone else's on the left. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="3dp"
+    android:layout_marginRight="3dp"
+    android:background="@drawable/message_row_band"
+    android:clickable="true"
+    android:defaultFocusHighlightEnabled="false"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp">
+
+    <LinearLayout
+        android:id="@+id/bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:background="@drawable/bubble_theirs"
+        android:duplicateParentState="true"
+        android:maxWidth="@dimen/bubble_max_width"
+        android:orientation="vertical"
+        android:paddingLeft="13dp"
+        android:paddingTop="8dp"
+        android:paddingRight="13dp"
+        android:paddingBottom="7dp">
+
+        <TextView
+            android:id="@+id/sender"
+            style="@style/Text.Operator.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:fontFamily="@font/inter_semibold"
+            android:includeFontPadding="false" />
+
+        <ImageView
+            android:id="@+id/thumb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="4dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/chat_photo_placeholder"
+            android:maxWidth="160dp"
+            android:maxHeight="120dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/body"
+            style="@style/Text.Operator.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="1dp"
+            android:maxWidth="@dimen/bubble_max_width" />
+
+        <TextView
+            android:id="@+id/meta"
+            style="@style/Text.Operator.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="2dp"
+            android:includeFontPadding="false"
+            android:textSize="11sp" />
+    </LinearLayout>
+</FrameLayout>

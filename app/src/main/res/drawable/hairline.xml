@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Row separator; disappears while the row is focused (duplicateParentState). -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <color android:color="@android:color/transparent" />
+    </item>
+    <item>
+        <color android:color="?attr/opHairline" />
+    </item>
+</selector>

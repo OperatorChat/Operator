@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One settings row: optional glyph, title and detail, a chevron when it opens
+     something, and a hairline below that hides while the row is focused. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/focusable_background"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/row_min_height"
+    android:orientation="horizontal"
+    android:paddingLeft="10dp"
+    android:paddingRight="8dp">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/icon_square"
+        android:contentDescription="@null"
+        android:padding="4dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:duplicateParentState="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:duplicateParentState="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/title"
+                    style="@style/Text.Operator.Strong"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:duplicateParentState="true"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/focusable_text" />
+
+                <TextView
+                    android:id="@+id/detail"
+                    style="@style/Text.Operator.Small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:duplicateParentState="true"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/focusable_secondary_text" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/chevron"
+                style="@style/Text.Operator.Body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:duplicateParentState="true"
+                android:includeFontPadding="false"
+                android:text="›"
+                android:textColor="@color/focusable_secondary_text"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/hairline"
+            android:duplicateParentState="true" />
+    </LinearLayout>
+</LinearLayout>

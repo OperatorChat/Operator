@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Link text: accent when idle, the focus text colour when the pill is focused. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:color="?attr/opFocusText" />
+    <item android:state_pressed="true" android:color="?attr/opFocusText" />
+    <item android:color="?attr/opAccent" />
+</selector>

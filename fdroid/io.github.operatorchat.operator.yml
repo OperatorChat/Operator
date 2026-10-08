@@ -1,0 +1,32 @@
+# Draft metadata for F-Droid (fdroiddata/metadata/io.github.operatorchat.operator.yml).
+# Submitted as a merge request to https://gitlab.com/fdroid/fdroiddata once the repository is public.
+Categories:
+  - Internet
+License: GPL-3.0-or-later
+AuthorName: Spanorak
+SourceCode: https://github.com/OperatorChat/Operator
+IssueTracker: https://github.com/OperatorChat/Operator/issues
+Changelog: https://github.com/OperatorChat/Operator/blob/main/CHANGELOG.md
+Donate: https://ko-fi.com/operatorchat
+
+AutoName: Operator
+
+RepoType: git
+Repo: https://github.com/OperatorChat/Operator.git
+
+Builds:
+  - versionName: 0.3.0-beta
+    versionCode: 3
+    commit: v0.3.0-beta
+    subdir: app
+    gradle:
+      - operator
+
+AntiFeatures:
+  NonFreeNet:
+    en-GB: Depends on the Beeper service (beeper.com) to reach WhatsApp, Signal and other networks; also works against any Matrix server.
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 0.3.0-beta
+CurrentVersionCode: 3

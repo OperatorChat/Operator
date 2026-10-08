@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/view_header" />
+
+    <EditText
+        android:id="@+id/search"
+        style="@style/EditText.Operator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
+        android:hint="@string/new_chat_search_hint"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName|textCapWords|textNoSuggestions"
+        android:minHeight="36dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/status"
+        style="@style/Text.Operator.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/screen_padding"
+        android:paddingTop="4dp"
+        android:paddingRight="@dimen/screen_padding"
+        android:paddingBottom="4dp"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp" />
+    </ScrollView>
+</LinearLayout>
