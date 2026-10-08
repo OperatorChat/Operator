@@ -21,7 +21,12 @@ Then, in this order:
 
 The [user guide](docs/user-guide.md) walks through every step with the exact screens and a trick for pasting the key instead of typing it on T9. The [FAQ](docs/faq.md) answers the questions people ask first.
 
-<!-- Screenshots: docs/screenshots/{chats,chat,options,settings}.png, taken from a test account so no real conversations appear. -->
+<p>
+<img src="docs/screenshots/chats.png" width="160" alt="Chat list">
+<img src="docs/screenshots/chat.png" width="160" alt="A chat">
+<img src="docs/screenshots/options.png" width="160" alt="Message options with reactions">
+<img src="docs/screenshots/settings.png" width="160" alt="Appearance settings">
+</p>
 
 ## What it does
 
