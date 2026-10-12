@@ -18,13 +18,23 @@ import androidx.core.view.isInvisible
 import chat.operator.app.R
 import chat.operator.app.databinding.ViewSoftkeyBarBinding
 
-/** The label bar for the left and right soft keys (SPEC §6). Never focusable. */
+/**
+ * The label bar for the left and right soft keys (SPEC §6). Never focusable, so the D-pad
+ * cannot land on it, but each chip can be tapped on phones with a touchscreen: hybrids such
+ * as the Dumber Mini have no key that sends MENU, so the chip is their only way to Options.
+ */
 class SoftKeyBar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
 ) : LinearLayout(context, attrs) {
 
     private val binding = ViewSoftkeyBarBinding.inflate(LayoutInflater.from(context), this)
+
+    /** Called when the left chip is tapped (what the left soft key would do). */
+    var onLeftTap: (() -> Unit)? = null
+
+    /** Called when the right chip is tapped (what the right soft key would do). */
+    var onRightTap: (() -> Unit)? = null
 
     init {
         orientation = HORIZONTAL
@@ -35,6 +45,8 @@ class SoftKeyBar @JvmOverloads constructor(
         // Room for the hairline drawn along the top, and a little air round the chips.
         val air = (4 * resources.displayMetrics.density).toInt()
         setPadding(0, resources.getDimensionPixelSize(R.dimen.softkey_hairline) + air, 0, air)
+        binding.leftLabel.setOnClickListener { onLeftTap?.invoke() }
+        binding.rightLabel.setOnClickListener { onRightTap?.invoke() }
     }
 
     fun setLabels(left: CharSequence?, right: CharSequence?) {

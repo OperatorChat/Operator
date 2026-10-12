@@ -60,7 +60,7 @@ If the cable isn't an option, email both files to yourself and download them fro
 
 ## Part 4. Sign in on the phone
 
-**The keys.** Up and down move the highlight; the centre key selects. The left soft key (top left under the screen) does what the label at the bottom left says, usually **Options**; the right soft key does what the bottom right says, usually **Back**. The green call key jumps to the message box in a chat.
+**The keys.** Up and down move the highlight; the centre key selects. The left soft key (top left under the screen) does what the label at the bottom left says, usually **Options**; the right soft key does what the bottom right says, usually **Back**. The green call key jumps to the message box in a chat. If your phone has no key for the left label, hold the centre key instead, or tap the label if the screen is touch-sensitive.
 
 **Pasting instead of typing.** When Operator asks for your email, password or key: press Home, open Files → Downloads → `operator.txt`, press and hold the value with your finger, drag the handles to select just the value, and choose **Copy**. Press Home, reopen Operator (it carries on where you were), press and hold the empty box, choose **Paste**.
 

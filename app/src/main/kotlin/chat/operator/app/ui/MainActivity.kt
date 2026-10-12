@@ -116,6 +116,10 @@ class MainActivity : AppCompatActivity(), ScreenHost {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         paintSystemBars()
+        // Touchscreen phones: the chips do what the physical soft keys would.
+        binding.softKeys.onLeftTap = { stack.lastOrNull()?.onMenu() }
+        @Suppress("DEPRECATION")
+        binding.softKeys.onRightTap = { onBackPressed() }
         route(intent)
     }
 
@@ -152,7 +156,31 @@ class MainActivity : AppCompatActivity(), ScreenHost {
      * the left (rotation 90) physical up means left; to the right (270) it means right.
      */
     private var remappingKey = false
+
+    /** Set once a held centre key has opened Options, so its release does not also select. */
+    private var centreHeld = false
+
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        // Holding the centre key opens Options, for keypads with no MENU key (the chip can
+        // also be tapped on touchscreens). The first key repeat is the long-press moment.
+        if (event.keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+            when (event.action) {
+                KeyEvent.ACTION_DOWN -> if (event.repeatCount == 0) {
+                    centreHeld = false
+                } else if (!centreHeld) {
+                    centreHeld = true
+                    currentFocus?.isPressed = false
+                    stack.lastOrNull()?.onMenu()
+                    return true
+                } else {
+                    return true
+                }
+                KeyEvent.ACTION_UP -> if (centreHeld) {
+                    centreHeld = false
+                    return true
+                }
+            }
+        }
         if (!remappingKey && resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
             val rotation = (if (android.os.Build.VERSION.SDK_INT >= 30) display?.rotation else @Suppress("DEPRECATION") windowManager.defaultDisplay.rotation) ?: android.view.Surface.ROTATION_0
             val mapped = when (rotation) {
