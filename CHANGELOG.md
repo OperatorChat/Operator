@@ -2,6 +2,11 @@
 
 Notable changes to Operator. Versions follow major.minor.patch.
 
+## 0.3.2-beta (12 October 2026)
+
+- The Options and Back chips at the bottom of the screen can now be tapped on phones with a touchscreen. Reported by a Dumber Mini user, whose keypad has no key that opens Options.
+- Holding the centre key opens Options on any keypad, for phones without a Menu key.
+
 ## 0.3.1-beta (8 October 2026)
 
 - Fixed: after approving the phone with a recovery key, the key-backup restore could give up once and never retry, leaving chats encrypted until the app was restarted. It now retries on a schedule.

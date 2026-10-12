@@ -1,0 +1,1 @@
+The Options and Back labels at the bottom of the screen can be tapped on touchscreen phones, and holding the centre key opens Options on keypads with no Menu key (reported on the Dumber Mini).
