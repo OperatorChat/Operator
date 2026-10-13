@@ -25,7 +25,7 @@ Rename the output to `operator-<version>.apk`.
 ## Publishing
 
 1. **GitHub release** on the tag, with the APK attached and the changelog entry as the body. This is the source of truth; everything below follows from it. Update the "Download the APK" link and size at the top of `README.md` to the new file name.
-2. **IzzyOnDroid** picks up new GitHub releases automatically once the app is in its index. First-time inclusion is requested at https://apt.izzysoft.de/fdroid/index/info (the APK must be under 30 MB, which it is).
+2. **IzzyOnDroid**: not listed. The inclusion request (October 2026) was declined under their policy on AI-assisted code, which Operator disclosed.
 3. **F-Droid** builds from the tag using the metadata file in the fdroiddata repository. New versions are picked up automatically when the metadata's auto-update mode is set to tags. The first submission is a merge request to https://gitlab.com/fdroid/fdroiddata adding `metadata/io.github.operatorchat.operator.yml` (a ready draft is in `fdroid/` here). It needs a gitlab.com account to open the merge request. Expect the review to take weeks.
 4. **Obtainium** users get the GitHub release directly; nothing to do.
 
@@ -34,7 +34,6 @@ Rename the output to `operator-<version>.apk`.
 | Place | Updated by | Notes |
 |---|---|---|
 | GitHub releases | Us, manually | Source of truth. Signed with our key. |
-| IzzyOnDroid | Automatic from GitHub releases | Our signature. Usually within a day or two. |
 | F-Droid | Automatic from tags, built by F-Droid | F-Droid's signature. Listing text comes from `fastlane/metadata`. Shows the "NonFreeNet" anti-feature because Operator depends on Beeper. |
 | Obtainium | Automatic from GitHub releases | Not a store; a user-side updater. |
 
