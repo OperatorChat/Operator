@@ -925,6 +925,42 @@ object MatrixRepository {
      * loop never runs while the screen is dark. Screen on → active long-poll;
      * dark → slow sync after the grace, or nothing at all under battery saver.
      */
+    /**
+     * What the homeserver knows about push for this account, for the problem
+     * report: every pusher (app id, format, gateway, device name; the pushkey
+     * itself is a bearer for the wake-up stream, so only its tail is shown)
+     * and the state of the global push rules that can silence pushes entirely.
+     */
+    suspend fun pushDiagnostics(): String {
+        val c = client ?: return "Push on server: not signed in"
+        return buildString {
+            runCatching { c.api.push.getPushers().getOrThrow() }
+                .onSuccess { r ->
+                    appendLine("Pushers on account: ${r.devices.size}")
+                    r.devices.forEach { p ->
+                        appendLine("  app=${p.appId} kind=${p.kind} format=${p.data.format} gateway=${p.data.url} device=${p.deviceDisplayName} key=…${p.pushkey.takeLast(6)}")
+                    }
+                }
+                .onFailure { appendLine("Pushers on account: failed (${Diagnostics.err(it)})") }
+            runCatching { c.api.push.getPushRules().getOrThrow() }
+                .onSuccess { r ->
+                    val g = r.global
+                    val master = g.override.orEmpty().firstOrNull { it.ruleId == ".m.rule.master" }
+                    appendLine("Push rules: master=${master?.enabled ?: "absent"} override=${g.override.orEmpty().size} content=${g.content.orEmpty().size} room=${g.room.orEmpty().size} sender=${g.sender.orEmpty().size} underride=${g.underride.orEmpty().size}")
+                    val disabledDefaults = (g.override.orEmpty().map { it.ruleId to it.enabled } + g.underride.orEmpty().map { it.ruleId to it.enabled })
+                        .filter { (id, enabled) -> id.startsWith(".m.") && !enabled }
+                        .map { it.first }
+                    if (disabledDefaults.isNotEmpty()) appendLine("Disabled default rules: ${disabledDefaults.joinToString()}")
+                    fun line(kind: String, id: String, enabled: Boolean, actions: Any?, conditions: Any?) =
+                        appendLine("  $kind ${id.take(40)} enabled=$enabled actions=${actions.toString().take(120)} cond=${conditions.toString().take(160)}")
+                    g.override.orEmpty().forEach { line("override", it.ruleId, it.enabled, it.actions, it.conditions) }
+                    g.room.orEmpty().forEach { line("room", "!" + it.ruleId.drop(1).take(6) + "…", it.enabled, it.actions, null) }
+                    g.underride.orEmpty().forEach { line("underride", it.ruleId, it.enabled, it.actions, it.conditions) }
+                }
+                .onFailure { appendLine("Push rules: failed (${Diagnostics.err(it)})") }
+        }.trimEnd()
+    }
+
     fun applySyncModeForScreenState() {
         if (isScreenInteractive()) {
             scope.launch { enterActiveSync() }

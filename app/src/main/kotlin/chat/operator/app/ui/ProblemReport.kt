@@ -79,7 +79,7 @@ object ProblemReport {
         }
     }
 
-    private fun build(activity: MainActivity): String = buildString {
+    private suspend fun build(activity: MainActivity): String = buildString {
         appendLine("Operator problem report")
         appendLine("Generated: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.UK).format(Date())}")
         appendLine("Operator: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}, ${BuildConfig.BUILD_TYPE})")
@@ -91,6 +91,19 @@ object ProblemReport {
         appendLine("Signed in: ${account.loggedIn}; server: ${account.homeserver ?: "-"}")
         appendLine("Connection: ${MatrixRepository.connectionState.value}")
         appendLine("Push: ${if (PushRouter.usingExternal) "external distributor" else "built-in ntfy"}, connected=${PushRouter.isConnected}, last push ${lastPush()}")
+        appendLine(MatrixRepository.pushDiagnostics())
+        if (MatrixRepository.isBeeper()) {
+            val hs = MatrixRepository.homeserverUrl(); val uid = MatrixRepository.currentUserId(); val tok = MatrixRepository.currentAccessToken()
+            val key = chat.operator.core.push.NtfyPushChannel.currentPushkey; val gw = chat.operator.core.push.NtfyPushChannel.notifyUrl
+            if (hs != null && uid != null && tok != null) {
+                appendLine(chat.operator.core.beeper.BeeperPush.listPushers(hs, uid, tok))
+            }
+        }
+        if (!PushRouter.usingExternal) {
+            // Round trip through the push server to this phone's own stream (15 s cap).
+            val ms = chat.operator.core.push.NtfyPushChannel.sendTestPush()
+            appendLine("Push self-test: ${if (ms != null) "received after ${ms} ms" else "nothing came back within 15 s"}")
+        }
         appendLine("Theme: ${Appearance.theme(activity).id}, mode ${Appearance.mode(activity)}, text ${Appearance.textScale(activity).id}")
         appendLine()
         appendLine("Recent log (Operator's own process only; no message content is ever logged):")

@@ -30,8 +30,8 @@ android {
     defaultConfig {
         minSdk = 26
         targetSdk = 35
-        versionCode = 6
-        versionName = "0.3.3-beta"
+        versionCode = 7
+        versionName = "0.3.4-beta"
         // 32-bit and 64-bit ARM only: the the smaller test phone is armeabi-v7a; no x86 phones in scope.
         ndk { abiFilters += listOf("armeabi-v7a", "arm64-v8a") }
     }

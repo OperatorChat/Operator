@@ -47,6 +47,23 @@ object MatrixPusher {
             .isSuccess
     }
 
+    /** App id of builds before 0.3.0, which left a pusher behind on upgrade. Beeper's
+     *  bridged-chat server kept pushing to that dead address and nothing to the new
+     *  one (13 Oct 2026), so this phone's legacy pusher is removed on registration. */
+    private const val LEGACY_APP_ID = "chat.operator.app"
+
+    /** Removes this phone's pusher from the pre-0.3.0 app id, if one is still registered. */
+    suspend fun removeLegacy(context: Context, client: MatrixClient) {
+        val pushers = runCatching { client.api.push.getPushers().getOrThrow() }.getOrNull() ?: return
+        pushers.devices
+            .filter { it.appId == LEGACY_APP_ID && it.deviceDisplayName == Build.MODEL }
+            .forEach { old ->
+                runCatching { client.api.push.setPushers(SetPushers.Request.Remove(LEGACY_APP_ID, old.pushkey)).getOrThrow() }
+                    .onSuccess { Log.i(TAG, "legacy pusher removed") }
+                    .onFailure { Log.w(TAG, "legacy pusher removal failed: ${it.message}") }
+            }
+    }
+
     /** Best-effort removal of one pusher. */
     suspend fun remove(context: Context, client: MatrixClient, pushkey: String) {
         runCatching { client.api.push.setPushers(SetPushers.Request.Remove(appId(context), pushkey)).getOrThrow() }

@@ -2,6 +2,12 @@
 
 Notable changes to Operator. Versions follow major.minor.patch.
 
+## 0.3.4-beta (13 October 2026)
+
+- Fixed: no push notifications on Beeper since the 0.3.0 upgrade. Beeper's bridged-chat server kept pushing to the registration left behind by the pre-0.3.0 app ID and never to the new one. That leftover is now removed automatically.
+- Several phones on one account now share one push topic, stored in the account's own settings on the homeserver, because Beeper pushes to a single registration per account. Every phone listens to the same wake-up topic and keeps the registration alive.
+- The problem report now lists the account's push registrations and rules, and runs a push round-trip test.
+
 ## 0.3.3-beta (13 October 2026)
 
 - Fixed: two phones on one account knocked each other's notifications out. Each start of Operator removed every other Operator pusher on the account, so only the phone started most recently got pushes. Now only this install's own old addresses are cleaned up.

@@ -57,6 +57,12 @@ object NtfyPushChannel : PushChannelHooks {
     private const val KEY_LAST_MSG_ID = "ntfy_last_msg_id"
     /** Topics this install used before re-provisioning; their pushers are removed once the new one is up. */
     private const val KEY_OLD_PUSHKEYS = "ntfy_old_pushkeys"
+    /** Global account-data type holding the account's shared topic (SPEC §5.5, 0.3.4). */
+    private const val ACCOUNT_DATA_TYPE = "io.github.operatorchat.operator.push"
+    /** Re-assert the pusher this often from the slow rounds: Synapse drops a pusher when the
+     *  phone that last set it signs out, and Beeper's bridged-chat server pushes to one
+     *  pusher per account, so every phone keeps the shared one alive. */
+    private const val REASSERT_INTERVAL_MS = 3_600_000L
     private const val TAG = "NtfyPushChannel"
 
     private const val RECONNECT_BASE_MS = 5_000L
@@ -99,6 +105,9 @@ object NtfyPushChannel : PushChannelHooks {
     @Volatile private var startedFor: MatrixClient? = null
     /** Elapsed-realtime of the last line read from the stream (keepalives included). */
     @Volatile private var lastStreamLineAtMs: Long = 0L
+    @Volatile private var lastAssertAtMs: Long = 0L
+    @Volatile private var notifyUrlInUse: String? = null
+    @Volatile private var clientInUse: MatrixClient? = null
 
     @Volatile
     override var isConnected: Boolean = false
@@ -177,7 +186,13 @@ object NtfyPushChannel : PushChannelHooks {
         lastMessageId = prefs.getString(KEY_LAST_MSG_ID, null)
         appContext = context.applicationContext
         pushkey = key
+        notifyUrlInUse = notifyUrl
+        clientInUse = client
         job = scope.launch {
+            // One topic per account, shared by every phone signed in to it: Beeper's
+            // bridged-chat server pushes to a single pusher per account (13 Oct 2026),
+            // so all phones register the same pushkey and all listen to its topic.
+            val streamUrl = reconcileSharedTopic(context.applicationContext, server) ?: sseUrl
             // Registration can fail at start-up (no network yet, server busy);
             // keep trying, or the phone would have no push until the next restart.
             launch {
@@ -189,8 +204,74 @@ object NtfyPushChannel : PushChannelHooks {
                     retryMs = (retryMs * 2).coerceAtMost(REGISTER_RETRY_MAX_MS)
                 }
             }
-            connect(sseUrl)
+            connect(streamUrl)
         }
+    }
+
+    /**
+     * Reads the account's shared topic from global account data. Adopts it when another
+     * phone published one on the same server (this phone's own topic becomes stale and its
+     * pusher is removed once the shared one is registered); publishes this phone's topic
+     * when there is none yet, or when the user chose a different server here. Returns the
+     * stream URL to connect to, or null to keep the local one (offline, or no session).
+     */
+    private fun reconcileSharedTopic(context: Context, server: String): String? {
+        val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        val localKey = prefs.getString(KEY_PUSHKEY, null) ?: return null
+        val url = accountDataUrl() ?: return null
+        val http = OkHttpClient()
+        val shared = runCatching {
+            http.newCall(Request.Builder().url(url).header("Authorization", "Bearer ${MatrixRepository.currentAccessToken()}").build())
+                .execute().use { resp ->
+                    when {
+                        resp.code == 404 -> null
+                        !resp.isSuccessful -> throw IOException("HTTP ${resp.code}")
+                        else -> {
+                            val o = Json { ignoreUnknownKeys = true }.parseToJsonElement(resp.body?.string() ?: "{}").jsonObject
+                            val s = o["server"]?.jsonPrimitive?.contentOrNull
+                            val t = o["topic"]?.jsonPrimitive?.contentOrNull
+                            if (s != null && t != null) s.trimEnd('/') to t else null
+                        }
+                    }
+                }
+        }.getOrElse { Log.w(TAG, "shared topic read failed: ${it.message}"); return null }
+        val localTopic = localKey.substringAfterLast('/')
+        if (shared != null && shared.first == server && shared.second == localTopic) return null
+        if (shared != null && shared.first == server) {
+            // Another phone owns the account's topic: use it from now on.
+            val topic = shared.second
+            val key = "$server/$topic"
+            val sseUrl = "$server/$topic/json"
+            val oldKeys = (prefs.getStringSet(KEY_OLD_PUSHKEYS, null) ?: emptySet()).toMutableSet()
+            oldKeys += localKey
+            prefs.edit()
+                .putStringSet(KEY_OLD_PUSHKEYS, oldKeys)
+                .putString(KEY_SSE_URL, sseUrl)
+                .putString(KEY_PUSHKEY, key)
+                .remove(KEY_LAST_MSG_ID)
+                .apply()
+            pushkey = key
+            lastMessageId = null
+            Log.i(TAG, "adopted the account's shared push topic")
+            return sseUrl
+        }
+        // No record yet, or the user chose a different server on this phone: publish ours.
+        val body = """{"server":"$server","topic":"$localTopic"}"""
+        runCatching {
+            http.newCall(
+                Request.Builder().url(url).header("Authorization", "Bearer ${MatrixRepository.currentAccessToken()}")
+                    .put(okhttp3.RequestBody.create(null, body)).header("Content-Type", "application/json").build(),
+            ).execute().use { if (!it.isSuccessful) throw IOException("HTTP ${it.code}") }
+            Log.i(TAG, "published this phone's push topic for the account")
+        }.onFailure { Log.w(TAG, "shared topic publish failed: ${it.message}") }
+        return null
+    }
+
+    private fun accountDataUrl(): String? {
+        val hs = MatrixRepository.homeserverUrl()?.trimEnd('/') ?: return null
+        val uid = MatrixRepository.currentUserId() ?: return null
+        MatrixRepository.currentAccessToken() ?: return null
+        return "$hs/_matrix/client/v3/user/${java.net.URLEncoder.encode(uid, "UTF-8")}/account_data/$ACCOUNT_DATA_TYPE"
     }
 
     override fun stop() {
@@ -234,6 +315,8 @@ object NtfyPushChannel : PushChannelHooks {
         val key = pushkey ?: return
         pusherRegistered = MatrixPusher.register(context, client, pushkey = key, gatewayUrl = notifyUrl)
         if (!pusherRegistered) return
+        lastAssertAtMs = android.os.SystemClock.elapsedRealtime()
+        MatrixPusher.removeLegacy(context, client)
         val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
         val old = prefs.getStringSet(KEY_OLD_PUSHKEYS, null) ?: return
         if (old.isEmpty()) return
@@ -242,6 +325,14 @@ object NtfyPushChannel : PushChannelHooks {
     }
 
     override fun checkAlive() {
+        // Keep the shared pusher alive (another phone's sign-out deletes it server-side).
+        val c = clientInUse; val n = notifyUrlInUse; val ctx = appContext
+        if (c != null && n != null && ctx != null &&
+            android.os.SystemClock.elapsedRealtime() - lastAssertAtMs > REASSERT_INTERVAL_MS
+        ) {
+            lastAssertAtMs = android.os.SystemClock.elapsedRealtime()
+            scope.launch { register(ctx, c, n) }
+        }
         if (!isConnected) return
         val silentMs = android.os.SystemClock.elapsedRealtime() - lastStreamLineAtMs
         if (silentMs < STREAM_STALE_MS) return

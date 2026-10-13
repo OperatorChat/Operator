@@ -1,0 +1,1 @@
+Fixed: no push notifications on Beeper after the 0.3.0 upgrade (a leftover registration from the old app ID took every push). Several phones on one account now share one push topic, so all of them are woken for new messages. The problem report gained push diagnostics.
