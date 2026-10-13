@@ -12,7 +12,8 @@ Operator is a Matrix client. Your messages are end-to-end encrypted by Trixnity 
 |---|---|---|
 | Encrypted messages, read receipts, typing, device keys | Your homeserver | Normal Matrix operation |
 | Your Beeper email, then the emailed code | `api.beeper.com` | Beeper's email-code sign-in (see "Beeper's private API") |
-| Pusher registration (app id, a random per-install topic, the gateway URL) | Your homeserver | So the server can wake the phone |
+| Pusher registration (app id, a random topic shared by every phone on the account, the gateway URL) | Your homeserver | So the server can wake the phones |
+| The shared topic and relay address, as account data (`io.github.operatorchat.operator.push`) | Your homeserver | So every phone on the account listens to the same wake-up topic (Beeper pushes to one registration per account) |
 | Push wake-ups (room id + event id, no content) | ntfy server → phone | The wake-up signal |
 | Bridge contact lists and "open chat" requests | Your homeserver's bridge provisioning endpoints (Beeper only) | New chat, contact names |
 | Downscaled photos you chose to view | Downloaded from your homeserver's media store, decrypted on the phone | On-demand media |
@@ -23,9 +24,9 @@ Nothing is sent to the Operator project or to third parties.
 
 - The database (Trixnity's Room store: encryption keys, room state, message history, and the session's access token) is encrypted at rest with SQLCipher. Its passphrase, and a copy of the access token used for raw HTTP calls, live in `EncryptedSharedPreferences` whose master key is held in the Android keystore (`SessionVault`). A database written by a build before 0.3.0 is converted in place at first start.
 - Photo thumbnails you have viewed, and files you chose to open, sit in the app's private cache directory, decrypted. Files handed to another app go through a `FileProvider` and are replaced on the next open.
-- Settings (theme, notification preferences, mute rules, the ntfy topic) are ordinary app-private preferences; none of them is secret on its own.
+- Settings (theme, notification preferences, mute rules, a copy of the ntfy topic) are ordinary app-private preferences; none of them is secret on its own.
 - Android backup is disabled (`allowBackup="false"`), so no copy of the session or keys goes to a cloud backup.
-- Signing out deletes the database, caches and preferences, clears the vault (so the next sign-in gets a fresh database key), removes the pusher, and logs the device out server-side.
+- Signing out deletes the database, caches and preferences, clears the vault (so the next sign-in gets a fresh database key), removes the pusher, and logs the device out server-side. The account-data record stays, because other phones on the account use it; they re-register the shared pusher within the hour.
 
 ## Logging
 
@@ -44,7 +45,7 @@ A new phone must be approved before it can read encrypted history. Operator offe
 ## Network
 
 - TLS everywhere; no cleartext traffic allowed (platform default for this target SDK). Android 8 devices have TLS 1.2 only; the servers in use accept it.
-- The ntfy topic is a 128-bit random value and works as a bearer token for the wake-up stream; it is stored in app-private preferences and rotated when the server changes.
+- The ntfy topic is a 128-bit random value and works as a bearer token for the wake-up stream. Since 0.3.4 one topic serves every phone on the account: it is kept in the account's global account data on the homeserver (which already holds it in the pusher registration) and cached in app-private preferences. It is rotated when the relay server changes. Whoever holds the topic can watch content-free wake-up timings and post spurious wake-ups, nothing more.
 
 ## Supply chain
 

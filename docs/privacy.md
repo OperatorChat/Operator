@@ -16,7 +16,7 @@ Operator is an independent open-source project, published under the GNU General 
 | Your recovery key, when you approve the phone | Used on the phone only, to unlock your encryption keys; never stored, never sent | To read your encrypted chats |
 | Messages, photos, files, reactions, read receipts, typing | Your Matrix server, end-to-end encrypted | Normal chat |
 | Contact lists and "start a chat" requests | Your Matrix server's bridge endpoints (Beeper only) | New chat |
-| A registration for notifications: a random identifier for this install and the relay's address | Your Matrix server | So the server can tell the relay something arrived |
+| A registration for notifications: a random identifier shared by your phones and the relay's address, also saved in your account's settings so every phone signed in to the account uses the same one | Your Matrix server | So the server can tell the relay something arrived, for all your phones |
 | A wake-up signal: the id of the chat and the id of the message, no content | The notification relay (ntfy.sh by default, or a server you choose), then your phone | So notifications arrive without Google services |
 | A problem report, **only if you choose Report a problem** | Your email app, addressed to the project | Diagnosing a bug |
 
