@@ -1,0 +1,1 @@
+Fixed: two phones on one account knocked each other's notifications out (only the most recently started phone got pushes). Push registration now retries if it fails at start-up, and the background check keeps its 15-minute cadence through deep sleep instead of stretching to an hour.

@@ -178,9 +178,11 @@ object UnifiedPushChannel : PushChannelHooks {
             pusherRegistered = ok
             if (ok) {
                 lastError = null
-                context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
-                    .putString(KEY_ENDPOINT, url).putString(KEY_GATEWAY, gateway).apply()
-                MatrixPusher.removeStale(context, c, keep = url)
+                val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+                val previous = prefs.getString(KEY_ENDPOINT, null)
+                prefs.edit().putString(KEY_ENDPOINT, url).putString(KEY_GATEWAY, gateway).apply()
+                // Only this install's previous endpoint is stale; other phones keep theirs.
+                MatrixPusher.removeStale(context, c, keep = url, candidates = listOfNotNull(previous))
             }
         }
     }

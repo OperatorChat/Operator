@@ -31,6 +31,9 @@ interface PushChannelHooks {
 
     /** True while a wake-up channel is actually open right now. */
     val isConnected: Boolean
+
+    /** Drops a wake-up channel that has gone silent, so it reconnects. */
+    fun checkAlive() = Unit
 }
 
 /** Delegating facade kept so the ported repository code reads as it did in Chats. */
@@ -47,4 +50,5 @@ object PushChannel : PushChannelHooks {
     override fun stop() = impl.stop()
     override suspend fun unregister(context: Context, client: MatrixClient) = impl.unregister(context, client)
     override val isConnected: Boolean get() = impl.isConnected
+    override fun checkAlive() = impl.checkAlive()
 }

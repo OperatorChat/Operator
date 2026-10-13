@@ -55,15 +55,20 @@ object MatrixPusher {
     }
 
     /**
-     * Removes every pusher this app registered on the account except [keep]
-     * (a stale topic from an earlier install, server or distributor), so a
-     * change of distributor never leaves a dead pusher behind.
+     * Removes the pushers in [candidates] (addresses this install used before
+     * a new server or distributor) except [keep]. Only this install's own old
+     * addresses are touched: the account may have other phones running
+     * Operator, and each has a live pusher under the same app id. (Until
+     * 0.3.3 this removed every other Operator pusher on the account, so two
+     * phones kept knocking each other's notifications out.)
      */
-    suspend fun removeStale(context: Context, client: MatrixClient, keep: String) {
+    suspend fun removeStale(context: Context, client: MatrixClient, keep: String, candidates: Collection<String>) {
+        val stale = candidates.filter { it != keep }.toSet()
+        if (stale.isEmpty()) return
         val appId = appId(context)
         val pushers = runCatching { client.api.push.getPushers().getOrThrow() }.getOrNull() ?: return
         pushers.devices
-            .filter { it.appId == appId && it.pushkey != keep }
-            .forEach { stale -> remove(context, client, stale.pushkey) }
+            .filter { it.appId == appId && it.pushkey in stale }
+            .forEach { old -> remove(context, client, old.pushkey) }
     }
 }

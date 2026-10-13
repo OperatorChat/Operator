@@ -1064,11 +1064,22 @@ object MatrixRepository {
                         "slow sync interval: ${interval / 1000}s (push ${if (PushChannel.isConnected) "connected" else "down"})",
                     )
                 }
-                delay(interval)
-                timedSyncOnce(c, "round")
-                    .onFailure { android.util.Log.w(TAG, "slow sync round failed: ${it.message}") }
+                // The phone's alarm clock keeps the cadence honest through
+                // deep sleep (a plain delay stretched 15 min to an hour).
+                val ctx = appContext
+                if (ctx != null) SlowSyncAlarm.sleep(ctx, interval) else delay(interval)
+                try {
+                    // A push stream that fell silent in deep sleep is dropped
+                    // here so it reconnects (its own read timeout stalls too).
+                    PushChannel.checkAlive()
+                    timedSyncOnce(c, "round")
+                        .onFailure { android.util.Log.w(TAG, "slow sync round failed: ${it.message}") }
+                } finally {
+                    SlowSyncAlarm.roundFinished()
+                }
             }
         }
+        job.invokeOnCompletion { SlowSyncAlarm.roundFinished() }
         return job
     }
 

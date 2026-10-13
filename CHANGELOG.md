@@ -2,6 +2,12 @@
 
 Notable changes to Operator. Versions follow major.minor.patch.
 
+## 0.3.3-beta (13 October 2026)
+
+- Fixed: two phones on one account knocked each other's notifications out. Each start of Operator removed every other Operator pusher on the account, so only the phone started most recently got pushes. Now only this install's own old addresses are cleaned up.
+- Fixed: if registering for push failed at start-up (no network yet), Operator never tried again. It now retries with backoff.
+- Fixed: the background check ran on a clock that stops in deep sleep, so "every 15 minutes" became about an hour on a sleeping phone. It now runs on the phone's alarm clock, and a push stream that has gone silent is reconnected at each check.
+
 ## 0.3.2-beta (12 October 2026)
 
 - The Options and Back chips at the bottom of the screen can now be tapped on phones with a touchscreen. Reported by a Dumber Mini user, whose keypad has no key that opens Options.

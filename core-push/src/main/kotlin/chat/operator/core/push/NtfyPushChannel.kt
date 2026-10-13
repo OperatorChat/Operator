@@ -55,10 +55,16 @@ object NtfyPushChannel : PushChannelHooks {
     private const val KEY_NOTIFY_URL = "ntfy_notify_url"
     private const val KEY_PUSHKEY = "ntfy_pushkey"
     private const val KEY_LAST_MSG_ID = "ntfy_last_msg_id"
+    /** Topics this install used before re-provisioning; their pushers are removed once the new one is up. */
+    private const val KEY_OLD_PUSHKEYS = "ntfy_old_pushkeys"
     private const val TAG = "NtfyPushChannel"
 
     private const val RECONNECT_BASE_MS = 5_000L
     private const val RECONNECT_MAX_MS = 60_000L
+    private const val REGISTER_RETRY_BASE_MS = 10_000L
+    private const val REGISTER_RETRY_MAX_MS = 300_000L
+    /** ntfy keeps a ~45 s keepalive; this much silence on the elapsed-realtime clock means the socket is dead. */
+    private const val STREAM_STALE_MS = 180_000L
 
     /** ntfy server base URL (no trailing slash). Set by the app from the brand config before [start]. */
     @Volatile
@@ -91,6 +97,8 @@ object NtfyPushChannel : PushChannelHooks {
     @Volatile private var lastMessageId: String? = null
     @Volatile private var appContext: Context? = null
     @Volatile private var startedFor: MatrixClient? = null
+    /** Elapsed-realtime of the last line read from the stream (keepalives included). */
+    @Volatile private var lastStreamLineAtMs: Long = 0L
 
     @Volatile
     override var isConnected: Boolean = false
@@ -148,10 +156,13 @@ object NtfyPushChannel : PushChannelHooks {
         // configured server changed (SPEC §5.5: re-register on any change).
         if (sseUrl == null || notifyUrl == null || key == null || prefs.getString(KEY_SERVER, null) != server) {
             val topic = "op-" + java.util.UUID.randomUUID().toString().replace("-", "")
+            val oldKeys = (prefs.getStringSet(KEY_OLD_PUSHKEYS, null) ?: emptySet()).toMutableSet()
+            key?.let { oldKeys += it }
             key = "$server/$topic"
             sseUrl = "$server/$topic/json"
             notifyUrl = "$server/_matrix/push/v1/notify"
             prefs.edit()
+                .putStringSet(KEY_OLD_PUSHKEYS, oldKeys)
                 .putString(KEY_SERVER, server)
                 .putString(KEY_SSE_URL, sseUrl)
                 .putString(KEY_NOTIFY_URL, notifyUrl)
@@ -167,7 +178,17 @@ object NtfyPushChannel : PushChannelHooks {
         appContext = context.applicationContext
         pushkey = key
         job = scope.launch {
-            register(context.applicationContext, client, notifyUrl)
+            // Registration can fail at start-up (no network yet, server busy);
+            // keep trying, or the phone would have no push until the next restart.
+            launch {
+                var retryMs = REGISTER_RETRY_BASE_MS
+                while (isActive) {
+                    register(context.applicationContext, client, notifyUrl)
+                    if (pusherRegistered) break
+                    delay(retryMs)
+                    retryMs = (retryMs * 2).coerceAtMost(REGISTER_RETRY_MAX_MS)
+                }
+            }
             connect(sseUrl)
         }
     }
@@ -212,7 +233,20 @@ object NtfyPushChannel : PushChannelHooks {
     private suspend fun register(context: Context, client: MatrixClient, notifyUrl: String) {
         val key = pushkey ?: return
         pusherRegistered = MatrixPusher.register(context, client, pushkey = key, gatewayUrl = notifyUrl)
-        if (pusherRegistered) MatrixPusher.removeStale(context, client, keep = key)
+        if (!pusherRegistered) return
+        val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        val old = prefs.getStringSet(KEY_OLD_PUSHKEYS, null) ?: return
+        if (old.isEmpty()) return
+        MatrixPusher.removeStale(context, client, keep = key, candidates = old)
+        prefs.edit().remove(KEY_OLD_PUSHKEYS).apply()
+    }
+
+    override fun checkAlive() {
+        if (!isConnected) return
+        val silentMs = android.os.SystemClock.elapsedRealtime() - lastStreamLineAtMs
+        if (silentMs < STREAM_STALE_MS) return
+        Log.w(TAG, "push stream silent for ${silentMs / 1000}s — reconnecting")
+        currentCall?.cancel()
     }
 
     private suspend fun CoroutineScope.connect(sseUrl: String) {
@@ -229,11 +263,13 @@ object NtfyPushChannel : PushChannelHooks {
                 call.execute().use { resp ->
                     if (!resp.isSuccessful) throw IOException("stream HTTP ${resp.code}")
                     Log.i(TAG, "push stream connected")
+                    lastStreamLineAtMs = android.os.SystemClock.elapsedRealtime()
                     isConnected = true
                     delayMs = RECONNECT_BASE_MS
                     val source = resp.body?.source() ?: throw IOException("stream empty body")
                     while (isActive) {
                         val line = source.readUtf8Line() ?: break
+                        lastStreamLineAtMs = android.os.SystemClock.elapsedRealtime()
                         val trimmed = line.trim()
                         if (trimmed.isEmpty()) continue
                         val payload = if (trimmed.startsWith("data: ")) trimmed.removePrefix("data: ").trim() else trimmed
